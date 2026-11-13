@@ -45,7 +45,7 @@ for strOption, strArg in getopt.getopt(sys.argv[1:], '', [
     if strOption == '--out' and strArg != '': args_strOut = strArg # path to where the output should be stored
 # end
 
-print("At start: ", args_strOut)
+#print("At start: ", args_strOut)
 
 ##########################################################
 
@@ -617,7 +617,7 @@ if __name__ == '__main__':
         tenOutput = estimate(tenOne, tenTwo, [0.5])[0]
 
         PIL.Image.fromarray((tenOutput.clip(0.0, 1.0).numpy(force=True).transpose(1, 2, 0)[:, :, ::-1] * 255.0).astype(numpy.uint8)).save(args_strOut)
-        print(args_strOut)
+        #print(args_strOut)
     elif args_strOut.split('.')[-1] in ['avi', 'mp4', 'webm', 'wmv']:
         import moviepy
 
