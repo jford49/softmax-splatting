@@ -45,6 +45,8 @@ for strOption, strArg in getopt.getopt(sys.argv[1:], '', [
     if strOption == '--out' and strArg != '': args_strOut = strArg # path to where the output should be stored
 # end
 
+print("At start: ", args_strOut)
+
 ##########################################################
 
 def read_flo(strFile):
@@ -607,6 +609,7 @@ def estimate(tenOne, tenTwo, fltTimes):
 ##########################################################
 
 if __name__ == '__main__':
+    print("Processing MAIN")
     if args_strOut.split('.')[-1] in ['bmp', 'jpg', 'jpeg', 'png']:
         tenOne = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strOne))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
         tenTwo = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strTwo))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
