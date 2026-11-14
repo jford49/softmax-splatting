@@ -30,6 +30,9 @@ args_strOne = './images/one.png'
 args_strTwo = './images/two.png'
 args_strVideo = './videos/car-turn.mp4'
 args_strOut = './out.png'
+args_strAction = 'default'
+args_strInterp = '1'
+args_intInterp = 1
 
 for strOption, strArg in getopt.getopt(sys.argv[1:], '', [
     'model=',
@@ -37,15 +40,25 @@ for strOption, strArg in getopt.getopt(sys.argv[1:], '', [
     'two=',
     'video=',
     'out=',
+    'action=',
+    'nInterp=',
 ])[0]:
     if strOption == '--model' and strArg != '': args_strModel = strArg # which model to use
     if strOption == '--one' and strArg != '': args_strOne = strArg # path to the first frame
     if strOption == '--two' and strArg != '': args_strTwo = strArg # path to the second frame
     if strOption == '--video' and strArg != '': args_strVideo = strArg # path to a video
     if strOption == '--out' and strArg != '': args_strOut = strArg # path to where the output should be stored
+    if strOption == '--action' and strArg != '': args_strAction = strArg #
+    if strOption == '--nInterp' and strArg != '': args_strInterp = strArg #
 # end
 
-#print("At start: ", args_strOut)
+try:
+    args_intInterp = int(args_strInterp)
+except ValueError:
+    print("Cannot convert args_strInterp to an integer. Using default=1")
+
+print("args_strAction = ", args_strAction)
+print("args_intInterp = ", args_intInterp)
 
 ##########################################################
 
@@ -610,7 +623,23 @@ def estimate(tenOne, tenTwo, fltTimes):
 
 if __name__ == '__main__':
     print("Processing MAIN")
-    if args_strOut.split('.')[-1] in ['bmp', 'jpg', 'jpeg', 'png']:
+    if args_strAction == 'sequence':
+        fracInterp = []
+        nIter = args_intInterp
+        iterList = []
+        for i in range(1, nIter):
+          iterList.append(i/nIter)
+
+        print(iterList)
+
+        tenOne = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strOne))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
+        tenTwo = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strTwo))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
+
+        tenOutput = estimate(tenOne, tenTwo, iterList)[0]
+
+        PIL.Image.fromarray((tenOutput.clip(0.0, 1.0).numpy(force=True).transpose(1, 2, 0)[:, :, ::-1] * 255.0).astype(numpy.uint8)).save(args_strOut)
+            
+    elif args_strOut.split('.')[-1] in ['bmp', 'jpg', 'jpeg', 'png']:
         tenOne = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strOne))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
         tenTwo = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strTwo))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
 
