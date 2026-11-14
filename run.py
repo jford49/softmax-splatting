@@ -621,6 +621,11 @@ def estimate(tenOne, tenTwo, fltTimes):
 
 ##########################################################
 
+def save_frame(tenOutput, fileName):
+        global args_strOut
+        save_path = path.join(args_strOut, filename)
+        PIL.Image.fromarray((tenOutput.clip(0.0, 1.0).numpy(force=True).transpose(1, 2, 0)[:, :, ::-1] * 255.0).astype(numpy.uint8)).save(save_path)
+
 if __name__ == '__main__':
     print("Processing MAIN")
     if args_strAction == 'sequence':
@@ -634,10 +639,13 @@ if __name__ == '__main__':
 
         tenOne = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strOne))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
         tenTwo = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strTwo))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
-
-        tenOutput = estimate(tenOne, tenTwo, iterList)[0]
-
-        PIL.Image.fromarray((tenOutput.clip(0.0, 1.0).numpy(force=True).transpose(1, 2, 0)[:, :, ::-1] * 255.0).astype(numpy.uint8)).save(args_strOut)
+        save_frame(tenOne, "img00001.png")
+        tenOutput = estimate(tenOne, tenTwo, iterList)
+        for i in range(0,len(iter_list)):
+            file_name = "img" + f"{i+2:05d}" + ".png"
+            save_frame(tenOutput[i], file_name)
+        
+        save_frame(tenTwo, "img" + f"{len(iter_list)+2:05d}" + ".png")
             
     elif args_strOut.split('.')[-1] in ['bmp', 'jpg', 'jpeg', 'png']:
         tenOne = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strOne))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
