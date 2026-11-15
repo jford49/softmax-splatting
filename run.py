@@ -648,6 +648,7 @@ if __name__ == '__main__':
             shutil.rmtree(framesOutFolder)
 
         print("Reading from:", args_strIn)
+        print("Writing to:", framesOutFolder)
         directory = Path(args_strIn)
         # Filter for files only, then sort alphabetically by filename
         files = sorted(
