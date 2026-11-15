@@ -8,6 +8,7 @@ import PIL.Image
 import sys
 import torch
 import typing
+from os import path
 
 import softsplat # the custom softmax splatting layer
 
