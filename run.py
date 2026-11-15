@@ -10,6 +10,7 @@ import torch
 import typing
 import os
 from os import path
+from pathlib import Path
 
 import softsplat # the custom softmax splatting layer
 
