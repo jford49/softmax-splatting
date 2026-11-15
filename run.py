@@ -629,7 +629,7 @@ def estimate(tenOne, tenTwo, fltTimes):
 
 def save_frame(tenOutput, fileName):
         global framesOutFolder
-        save_path = path.join(framesOutFolder, filename)
+        save_path = path.join(framesOutFolder, fileName)
         PIL.Image.fromarray((tenOutput.clip(0.0, 1.0).numpy(force=True).transpose(1, 2, 0)[:, :, ::-1] * 255.0).astype(numpy.uint8)).save(save_path)
 
 if __name__ == '__main__':
