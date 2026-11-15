@@ -30,7 +30,7 @@ args_strOne = './images/one.png'
 args_strTwo = './images/two.png'
 args_strVideo = './videos/car-turn.mp4'
 args_strOut = './out.png'
-args_strIN = '????'
+args_strIn = '????'
 args_strAction = 'default'
 args_strInterp = '1'
 args_intInterp = 1
@@ -625,11 +625,12 @@ def estimate(tenOne, tenTwo, fltTimes):
 ##########################################################
 
 def save_frame(tenOutput, fileName):
-        global args_strOut
-        save_path = path.join(args_strOut, filename)
+        global framesOutFolder
+        save_path = path.join(framesOutFolder, filename)
         PIL.Image.fromarray((tenOutput.clip(0.0, 1.0).numpy(force=True).transpose(1, 2, 0)[:, :, ::-1] * 255.0).astype(numpy.uint8)).save(save_path)
 
 if __name__ == '__main__':
+    import shutil
     print("Processing MAIN")
     if args_strAction == 'sequence':
         fracInterp = []
@@ -638,10 +639,13 @@ if __name__ == '__main__':
         for i in range(1, nIter):
           iterList.append(i/nIter)
 
+        framesOutFolder = path.join(args_strOut, "splated_frames")
         print(iterList)
+        if os.path.exists(framesOutFolder):
+            shutil.rmtree(framesOutFolder)
 
-        print("Reading from:", args_strIN)
-        directory = Path(args_strIN)
+        print("Reading from:", args_strIn)
+        directory = Path(args_strIn)
         # Filter for files only, then sort alphabetically by filename
         files = sorted(
             (f for f in directory.iterdir() if f.is_file()),
