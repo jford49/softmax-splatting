@@ -646,6 +646,8 @@ if __name__ == '__main__':
         print(iterList)
         if os.path.exists(framesOutFolder):
             shutil.rmtree(framesOutFolder)
+            
+        os.makedirs(framesOutFolder)
 
         print("Reading from:", args_strIn)
         print("Writing to:", framesOutFolder)
