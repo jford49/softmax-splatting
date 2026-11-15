@@ -30,6 +30,7 @@ args_strOne = './images/one.png'
 args_strTwo = './images/two.png'
 args_strVideo = './videos/car-turn.mp4'
 args_strOut = './out.png'
+args_strIN = '????'
 args_strAction = 'default'
 args_strInterp = '1'
 args_intInterp = 1
@@ -40,6 +41,7 @@ for strOption, strArg in getopt.getopt(sys.argv[1:], '', [
     'two=',
     'video=',
     'out=',
+    'in=',
     'action=',
     'nInterp=',
 ])[0]:
@@ -48,6 +50,7 @@ for strOption, strArg in getopt.getopt(sys.argv[1:], '', [
     if strOption == '--two' and strArg != '': args_strTwo = strArg # path to the second frame
     if strOption == '--video' and strArg != '': args_strVideo = strArg # path to a video
     if strOption == '--out' and strArg != '': args_strOut = strArg # path to where the output should be stored
+    if strOption == '--in' and strArg != '': args_strIn = strArg # path to where the input images are
     if strOption == '--action' and strArg != '': args_strAction = strArg #
     if strOption == '--nInterp' and strArg != '': args_strInterp = strArg #
 # end
@@ -637,15 +640,31 @@ if __name__ == '__main__':
 
         print(iterList)
 
-        tenOne = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strOne))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
-        tenTwo = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strTwo))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
+        print("Reading from:", args_strIN)
+        directory = Path(args_strIN)
+        # Filter for files only, then sort alphabetically by filename
+        files = sorted(
+            (f for f in directory.iterdir() if f.is_file()),
+            key=lambda f: f.name
+        )
+
+        print(len(files), "files found");
+
+        tenOne = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(files[0]))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
         save_frame(tenOne, "img00001.png")
-        tenOutput = estimate(tenOne, tenTwo, iterList)
-        for i in range(0,len(iter_list)):
-            file_name = "img" + f"{i+2:05d}" + ".png"
-            save_frame(tenOutput[i], file_name)
-        
-        save_frame(tenTwo, "img" + f"{len(iter_list)+2:05d}" + ".png")
+        img_idx = 2
+        for j in range(1, len(files)):
+            tenTwo = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(files[j]))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
+            
+            tenOutput = estimate(tenOne, tenTwo, iterList)
+            for i in range(0,len(iter_list)):
+                file_name = "img" + f"{img_idx:05d}" + ".png"
+                img_idx = img_idx + 1
+                save_frame(tenOutput[i], file_name)
+            
+            save_frame(tenTwo, "img" + f"{img_idx+2:05d}" + ".png")
+            img_idx = img_idx + 1
+            tenOne = tenTwo
             
     elif args_strOut.split('.')[-1] in ['bmp', 'jpg', 'jpeg', 'png']:
         tenOne = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(args_strOne))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
