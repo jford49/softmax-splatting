@@ -674,7 +674,7 @@ if __name__ == '__main__':
                 save_frame(tenOutput[i], file_name)
             
             print("tenTwo", img_idx)
-            save_frame(tenTwo, "img" + f"{img_idx+2:05d}" + ".png")
+            save_frame(tenTwo, "img" + f"{img_idx:05d}" + ".png")
             img_idx = img_idx + 1
             tenOne = tenTwo
             
