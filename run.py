@@ -661,6 +661,7 @@ if __name__ == '__main__':
         print(len(files), "files found");
 
         tenOne = torch.FloatTensor(numpy.ascontiguousarray(numpy.array(PIL.Image.open(files[0]))[:, :, ::-1].transpose(2, 0, 1).astype(numpy.float32) * (1.0 / 255.0)))
+        print("tenOne", 1)
         save_frame(tenOne, "img00001.png")
         img_idx = 2
         for j in range(1, len(files)):
@@ -668,7 +669,7 @@ if __name__ == '__main__':
             
             tenOutput = estimate(tenOne, tenTwo, iterList)
             for i in range(0,len(iterList)):
-                print(img_idx)
+                #print(img_idx)
                 file_name = "img" + f"{img_idx:05d}" + ".png"
                 img_idx = img_idx + 1
                 save_frame(tenOutput[i], file_name)
