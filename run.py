@@ -668,10 +668,12 @@ if __name__ == '__main__':
             
             tenOutput = estimate(tenOne, tenTwo, iterList)
             for i in range(0,len(iterList)):
+                print(img_idx)
                 file_name = "img" + f"{img_idx:05d}" + ".png"
                 img_idx = img_idx + 1
                 save_frame(tenOutput[i], file_name)
             
+            print("tenTwo", img_idx)
             save_frame(tenTwo, "img" + f"{img_idx+2:05d}" + ".png")
             img_idx = img_idx + 1
             tenOne = tenTwo
